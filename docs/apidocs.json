@@ -1,0 +1,84 @@
+{
+    "signup_as_manager": {
+        "url": "/signup/manager",
+        "method": "post",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "firstname": "Raj",
+            "lastname": "Kumar",
+            "address": "Pune city",
+            "company": "Mind B",
+            "email": "rk@bindb.com",
+            "password": "rajkumar@123"
+        }
+    },
+    "signin_as_manager": {
+        "url": "/signin/manager",
+        "method": "post",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "body": {
+            "email": "email1@gmail.com",
+            "password": "Omkar@123"
+        },
+        "note": "this api will return token which will get used for authorization of next apis"
+    },
+    "create_employee": {
+        "url": "/create/employee",
+        "method": "post",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {token}"
+        },
+        "body": {
+            "firstname": "Rahul",
+            "lastname": "Roy",
+            "address": "Pune City",
+            "email": "rr@mindb.com",
+            "mobile": 9882899188,
+            "createdBy": "5ef704439dbb3c07d9a130ea"
+        },
+        "note": "this will return employee details from which _id is can be uses to update/delete employee"
+    },
+    "update_employee": {
+        "url": "/employee",
+        "method": "put",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {token}"
+        },
+        "body": {
+            "_id": "5ef7099ff6ab73085cd9cb42",
+            "firstname": "Rahul",
+            "lastname": "Roy",
+            "address": "Erandwane Pune"
+        }
+    },
+    "delete_employee": {
+        "url": "employee/{employeeId}",
+        "method": "delete",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {token}"
+        }
+    },
+    "get_all_employees_of_manager": {
+        "url": "employees/of/manager/{managerId}",
+        "method": "get",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {token}"
+        }
+    },
+    "get_manager": {
+        "url": "/manager/{managerId}",
+        "method": "get",
+        "headers": {
+            "Content-Type": "application/json",
+            "Authorization": "Bearer {token}"
+        }
+    }
+}
