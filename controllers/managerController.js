@@ -5,7 +5,10 @@ exports.managerById = (req, res, next, id) => {
     Manager.findById(id)
         .exec((err, manager) => {
             if (err || !manager) {
-                res.status(400).json({ error: 'manager not found' });
+                res.status(400).json({
+                    message: 'manager not found',
+                    error: err
+                });
             }
             req.profile = manager;
             next()

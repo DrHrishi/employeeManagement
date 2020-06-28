@@ -4,14 +4,13 @@ const _ = require('lodash');
 exports.createEmployee = async (req, res) => {
     // first checking if Employee exist with same email else creating new
     const employeeExist = await Employee.findOne({ email: req.body.email })
-    if (employeeExist) return res.status(403).json({ error: "Email is taken" });
+    if (employeeExist) return res.status(403).json({ message: "Email is taken", error: "Error" });
     const employee = await new Employee(req.body);
     employee.save((err, result) => {
         if (err) {
             return res.status(400).json({
-                error: {
-                    message: err.message ? err.message : err
-                }
+                message: err.message || 'error while saving',
+                error: err
             })
         }
         res.json(employee);
@@ -23,7 +22,10 @@ exports.employeeById = (req, res, next, id) => {
     Employee.findById(id)
         .exec((err, employee) => {
             if (err || !employee) {
-                res.status(400).json({ error: 'Employee not found' });
+                res.status(400).json({
+                    message: 'Employee not found',
+                    error: err
+                });
             }
             req.profile = employee;
             next()
@@ -33,20 +35,26 @@ exports.employeeById = (req, res, next, id) => {
 exports.allEmployees = (req, res) => {
     Employee.find((err, employees) => {
         if (err) {
-            res.status(400).json({ error: err })
+            res.status(400).json({
+                message: 'Employee not found',
+                error: err
+            })
         }
         res.json({ status: 'success', employees: employees })
-    }).select("firstname lastname email mobile created")
+    }).select("firstname lastname email mobile dob address created")
 }
 
 // getting employees created by specific manager
 exports.allEmployeesofManager = (req, res) => {
     Employee.find({ createdBy: req.params.managerId }, (err, employees) => {
         if (err) {
-            res.status(400).json({ error: err })
+            res.status(400).json({
+                message: 'Employees not found',
+                error: err
+            })
         }
         res.json({ status: 'success', employees: employees })
-    }).select("name email mobile created")
+    }).select("firstname lastname email mobile dob address created")
 }
 
 // getting employee by id , this function will get call after `employeeById` middleware
@@ -57,13 +65,17 @@ exports.getEmployee = (req, res) => {
 // update employee
 exports.updateEmployee = async (req, res, next) => {
     let employee = await Employee.findOne({ _id: req.body._id })
-    if (!employee) return res.status(403).json({ error: "Employee Not found" });
+    if (!employee) return res.status(403).json({ message: "Employee Not found", error: "Error" });
     employee.updated = Date.now()
+    req.body.email = employee.email
     // we are using .extend from loadash to copy properties
     employee = _.extend(employee, req.body)
     employee.save((err, update) => {
         if (err)
-            return res.status(400).json({ error: err })
+            return res.status(400).json({
+                message: 'Error while saving employee',
+                error: err
+            })
         res.json(update);
     })
 }
@@ -72,7 +84,10 @@ exports.updateEmployee = async (req, res, next) => {
 exports.removeEmployee = (req, res) => {
     let employee = req.profile;
     employee.remove((err, employee) => {
-        if (err) return res.status(400).json({ error: err });
+        if (err) return res.status(400).json({
+            message: 'Error while deleting employee',
+            error: err
+        });
     });
     return res.json({ message: 'employee deleted successfully' })
 }

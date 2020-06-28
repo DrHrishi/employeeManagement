@@ -5,16 +5,17 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
+app.use(cors());
 const fs = require('fs');//require to read file
 const config = require('./config/config');
 
-app.use(cors());
+
 app.use(bodyParser.json());
 app.use(cookieParser())
 
 const authRoutes = require('./routes/auth');
-const managerRoutes= require('./routes/manager');
-const employeeRoutes= require('./routes/employee');
+const managerRoutes = require('./routes/manager');
+const employeeRoutes = require('./routes/employee');
 
 app.use('/', authRoutes);
 app.use('/', managerRoutes);
@@ -23,7 +24,7 @@ app.use('/', employeeRoutes);
 // returning all api list
 app.get('/', (req, res) => {
     fs.readFile('docs/apidocs.json', (err, data) => {
-        if (err) return res.status(400).json({ error: err })
+        if (err) return res.status(400).json({ message: 'error while reading file', error: err })
         const docs = JSON.parse(data)
         res.json(docs);
     })
