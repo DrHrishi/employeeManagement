@@ -47,8 +47,6 @@ exports.employeeValidator = [
             .withMessage('Created By must not be null')
     ], (req, res, next) => {
         var errors = validationResult(req);
-        console.log(errors);
-        
         if (!errors.isEmpty()) {
             const firsrError = errors.array().map((error) => error)[0]
             return res.status(400).json({ message: firsrError.msg, error: firsrError })
